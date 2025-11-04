@@ -30,7 +30,7 @@ class Player(Sprite):
         self.dir = vec(0,0)
 
     def get_keys(self):
-        self.vel = vec(0,0)
+        self.vel = vec(0,Gravity)
         keys = pg.key.get_pressed()
         if keys[pg.K_SPACE]:
             print(self.rect.x)
@@ -193,6 +193,7 @@ class Wall(Sprite):
         self.vel = vec(0,0)
         self.pos = vec(x,y) * TILESIZE[0]
         self.state = state
+        
 
         # choose image based on state
         if self.state == "moveable":

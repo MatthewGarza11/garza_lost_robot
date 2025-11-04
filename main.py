@@ -5,8 +5,6 @@
 # update
 # draw
 
-# yay I can use Github from VScode
-
 import math
 import random
 import sys
@@ -34,25 +32,31 @@ class Game:
       self.img_folder = path.join(self.game_folder, 'images')
       self.map = Map(path.join(self.game_folder, 'level1.txt'))
 
-      # Load and SCALE your player image to make it bigger
+      # Load and SCALE your player image
       self.player_img = pg.image.load(path.join(self.img_folder, 'green shooter.png')).convert_alpha()
-      self.coin_img = pg.image.load(path.join(self.img_folder, 'Coin.png')).convert_alpha()
-      self.wall_img = pg.image.load(path.join(self.img_folder, 'dirty brick.png')).convert_alpha()
-      self.moveable_wall_img = pg.image.load(path.join(self.img_folder, 'brick (2).png')).convert_alpha()
-      # Change these numbers to resize your player (width, height)
-      self.player_img = pg.transform.scale(self.player_img, (48, 48))  # 2x bigger than 32x32
+      self.player_img = pg.transform.scale(self.player_img, (48, 48))  # Resize player
 
+      # Load and SCALE coin image
+      self.coin_img = pg.image.load(path.join(self.img_folder, 'Coin.png')).convert_alpha()
+      self.coin_img = pg.transform.scale(self.coin_img, (32, 32))  # Resize coin
+
+      # Load and SCALE wall images
+      self.wall_img = pg.image.load(path.join(self.img_folder, 'dirty brick.png')).convert_alpha()
+      self.wall_img = pg.transform.scale(self.wall_img, (32, 32))  # Regular wall size
+
+      self.moveable_wall_img = pg.image.load(path.join(self.img_folder, 'brick (2).png')).convert_alpha()
+      self.moveable_wall_img = pg.transform.scale(self.moveable_wall_img, (32, 32))  # Moveable wall size
 
    def new(self):
-      # the sprite Group allows us to upate and draw sprite in grouped batches
+      # Create all sprite groups
       self.load_data()
-      # create all sprite groups
       self.all_sprites = pg.sprite.Group()
       self.all_mobs = pg.sprite.Group()
       self.all_coins = pg.sprite.Group()
       self.all_walls = pg.sprite.Group()
       self.all_projectiles = pg.sprite.Group()
       
+      # Create game objects based on map layout
       for row, tiles in enumerate(self.map.data):
          for col, tile in enumerate(tiles):
             if tile == '1':
@@ -79,10 +83,10 @@ class Game:
 
    def events(self):
       for event in pg.event.get():
-        if event.type == pg.QUIT:
-          self.playing = False
-        if event.type == pg.MOUSEBUTTONDOWN:
-           print("I can get input from mousey mouse mouse mousekerson")
+         if event.type == pg.QUIT:
+            self.playing = False
+         if event.type == pg.MOUSEBUTTONDOWN:
+            print("I can get input from mousey mouse mouse mousekerson")
 
    def update(self):
       self.all_sprites.update()
@@ -96,12 +100,12 @@ class Game:
          print("I'm BROKE!")
 
    def draw_text(self, surface, text, size, color, x, y):
-        font_name = pg.font.match_font('arial')
-        font = pg.font.Font(font_name, size)
-        text_surface = font.render(text, True, color)
-        text_rect = text_surface.get_rect()
-        text_rect.midtop = (x, y)
-        surface.blit(text_surface, text_rect)
+      font_name = pg.font.match_font('arial')
+      font = pg.font.Font(font_name, size)
+      text_surface = font.render(text, True, color)
+      text_rect = text_surface.get_rect()
+      text_rect.midtop = (x, y)
+      surface.blit(text_surface, text_rect)
 
    def draw(self):
       self.screen.fill(BLACK)

@@ -14,4 +14,6 @@ FPS = 30
 SCORE = 0
 # using a tuple to define a tile size
 
+Gravity = 10
+
 HEALTH = 100
