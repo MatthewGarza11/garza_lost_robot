@@ -24,10 +24,6 @@ class Game:
       pg.display.set_caption("Garza's awesome game!!!!!")
       self.playing = True
    
-   # sets up a game folder directory path using the current folder containing THIS file
-   # give the Game class a map property which uses the Map class to parse the level1.txt file
-   # loads image files from images folder
-   # Used chat for help so i can resize better
    def load_data(self):
       self.game_folder = path.dirname(__file__)
       self.img_folder = path.join(self.game_folder, 'images')
@@ -49,7 +45,6 @@ class Game:
       self.moveable_wall_img = pg.transform.scale(self.moveable_wall_img, (32, 32))  # Moveable wall size
 
    def new(self):
-      # Create all sprite groups
       self.load_data()
       self.all_sprites = pg.sprite.Group()
       self.all_mobs = pg.sprite.Group()
@@ -57,7 +52,6 @@ class Game:
       self.all_walls = pg.sprite.Group()
       self.all_projectiles = pg.sprite.Group()
       
-      # Create game objects based on map layout
       for row, tiles in enumerate(self.map.data):
          for col, tile in enumerate(tiles):
             if tile == '1':
@@ -74,11 +68,8 @@ class Game:
    def run(self):
       while self.playing:
          self.dt = self.clock.tick(FPS) / 1000
-         # input
          self.events()
-         # process
          self.update()
-         # output
          self.draw()
       pg.quit()
 
@@ -89,16 +80,29 @@ class Game:
          if event.type == pg.MOUSEBUTTONDOWN:
             print("I can get input from mousey mouse mouse mousekerson")
 
+   # random mob spawner asked chat for some guidance
+   def spawn_random_mobs(self, count):
+      for _ in range(count):
+         while True:
+            x = randint(1, 20)
+            y = randint(1, 20)
+            # Avoid spawning inside walls
+            wall_hit = any(wall.rect.collidepoint(x * TILESIZE[0], y * TILESIZE[1]) for wall in self.all_walls)
+            if not wall_hit:
+               Mob(self, x, y)
+               break
+
    def update(self):
       self.all_sprites.update()
       seconds = pg.time.get_ticks() // 1000
       countdown = 10
       self.time = countdown - seconds
 
-      if len(self.all_coins) == 0:
-         for i in range(2, 5):
-            Coin(self, randint(1, 20), randint(1, 20))
-         print("I'm BROKE!")
+      # Respawn mobs when all are dead chat helped
+      if len(self.all_mobs) == 0:
+         mob_count = randint(2, 4)
+         self.spawn_random_mobs(mob_count)
+         print(f"All mobs defeated! Respawning {mob_count} new mobs...")
 
    def draw_text(self, surface, text, size, color, x, y):
       font_name = pg.font.match_font('arial')

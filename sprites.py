@@ -27,14 +27,17 @@ class Player(Sprite):
         self.health = 100
         self.coins = 0
         self.cd = Cooldown(1000)
-        self.dir = vec(0,0)
+        self.dir = vec(0, -1)  # default facing up
 
     def get_keys(self):
-        self.vel = vec(0,Gravity)
+        self.vel = vec(0, Gravity)
         keys = pg.key.get_pressed()
         if keys[pg.K_SPACE]:
-            print(self.rect.x)
-            p = Projectile(self.game, self.rect.x, self.rect.y, self.dir)
+            # make sure player has a direction
+            if self.dir.length_squared() == 0:
+                self.dir = vec(0, -1)  # default shoot up
+            # create projectile
+            Projectile(self.game, self.rect.centerx, self.rect.centery, self.dir)
         if keys[pg.K_w]:
             self.vel.y = -self.speed*self.game.dt
             self.dir = vec(0,-1)
@@ -47,7 +50,6 @@ class Player(Sprite):
         if keys[pg.K_d]:
             self.vel.x = self.speed*self.game.dt
             self.dir = vec(1,0)
-        # accounting for diagonal
         if self.vel[0] != 0 and self.vel[1] != 0:
             self.vel *= 0.7071
 
@@ -131,9 +133,10 @@ class Mob(Sprite):
         self.image = pg.Surface((32, 32))
         self.image.fill(RED)
         self.rect = self.image.get_rect()
-        self.vel = vec(choice([-1,1]),choice([-1,1]))
+        self.vel = vec(choice([-1,1]), choice([-1,1]))
         self.pos = vec(x,y)*TILESIZE[0]
         self.speed = 5
+        self.health = 100  # Added this line so mobs can take damage
         print(self.pos)
     def collide_with_walls(self, dir):
         if dir == 'x':
@@ -271,12 +274,12 @@ class Projectile(Sprite):
         self.image = pg.Surface((16, 16))
         self.image.fill(RED)
         self.rect = self.image.get_rect()
-        self.vel = dir
+        self.vel = dir.normalize()  # <-- ensures consistent speed
         self.pos = vec(x, y)
         self.rect.center = (x, y)
         self.speed = 10
-        self.damage = 25  # how much damage the projectile deals
-#asked chatgpt to help my bullet kill mob 
+        self.damage = 25
+
     def update(self):
         # Move bullet
         self.pos += self.vel * self.speed
@@ -294,5 +297,4 @@ class Projectile(Sprite):
                 print(f"Mob hit! Health: {mob.health}")
                 if mob.health <= 0:
                     mob.kill()
-            self.kill()  # bullet disappears after hitting
-
+            self.kill()
