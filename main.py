@@ -27,6 +27,7 @@ class Game:
    # sets up a game folder directory path using the current folder containing THIS file
    # give the Game class a map property which uses the Map class to parse the level1.txt file
    # loads image files from images folder
+   # Used chat for help so i can resize better
    def load_data(self):
       self.game_folder = path.dirname(__file__)
       self.img_folder = path.join(self.game_folder, 'images')
@@ -41,7 +42,7 @@ class Game:
       self.coin_img = pg.transform.scale(self.coin_img, (32, 32))  # Resize coin
 
       # Load and SCALE wall images
-      self.wall_img = pg.image.load(path.join(self.img_folder, 'dirty brick.png')).convert_alpha()
+      self.wall_img = pg.image.load(path.join(self.img_folder, 'dirty brick 3.png')).convert_alpha()
       self.wall_img = pg.transform.scale(self.wall_img, (32, 32))  # Regular wall size
 
       self.moveable_wall_img = pg.image.load(path.join(self.img_folder, 'brick (2).png')).convert_alpha()

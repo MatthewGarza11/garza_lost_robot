@@ -261,6 +261,8 @@ class Wall(Sprite):
         self.rect.y = self.pos.y
         self.collide_with_walls('y')
 
+
+
 class Projectile(Sprite):
     def __init__(self, game, x, y, dir):
         self.game = game
@@ -270,14 +272,27 @@ class Projectile(Sprite):
         self.image.fill(RED)
         self.rect = self.image.get_rect()
         self.vel = dir
-        self.pos = vec(x,y)
-        self.rect.x = x
-        self.rect.y = y
+        self.pos = vec(x, y)
+        self.rect.center = (x, y)
         self.speed = 10
+        self.damage = 25  # how much damage the projectile deals
+#asked chatgpt to help my bullet kill mob 
     def update(self):
+        # Move bullet
         self.pos += self.vel * self.speed
-        self.rect.x = self.pos.x
-        self.rect.y = self.pos.y
-        hits = pg.sprite.spritecollide(self, self.game.all_walls, True)
-        if hits:
+        self.rect.center = self.pos
+
+        # Check collision with walls
+        if pg.sprite.spritecollideany(self, self.game.all_walls):
             self.kill()
+
+        # Check collision with mobs
+        hits = pg.sprite.spritecollide(self, self.game.all_mobs, False)
+        if hits:
+            for mob in hits:
+                mob.health -= self.damage
+                print(f"Mob hit! Health: {mob.health}")
+                if mob.health <= 0:
+                    mob.kill()
+            self.kill()  # bullet disappears after hitting
+
