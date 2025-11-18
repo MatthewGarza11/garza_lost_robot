@@ -23,26 +23,28 @@ class Game:
       self.screen = pg.display.set_mode((WIDTH, HEIGHT))
       pg.display.set_caption("Garza's awesome game!!!!!")
       self.playing = True
-   
+
+   # Cooldown 
+      self.shoot_cooldown = Cooldown(400)   # cooldown in ms
+
+
    def load_data(self):
       self.game_folder = path.dirname(__file__)
       self.img_folder = path.join(self.game_folder, 'images')
       self.map = Map(path.join(self.game_folder, 'level1.txt'))
 
-      # Load and SCALE your player image
       self.player_img = pg.image.load(path.join(self.img_folder, 'green shooter.png')).convert_alpha()
-      self.player_img = pg.transform.scale(self.player_img, (48, 48))  # Resize player
+      self.player_img = pg.transform.scale(self.player_img, (48, 48))
 
-      # Load and SCALE coin image
       self.coin_img = pg.image.load(path.join(self.img_folder, 'Coin.png')).convert_alpha()
-      self.coin_img = pg.transform.scale(self.coin_img, (32, 32))  # Resize coin
+      self.coin_img = pg.transform.scale(self.coin_img, (32, 32))
 
-      # Load and SCALE wall images
       self.wall_img = pg.image.load(path.join(self.img_folder, 'dirty brick 3.png')).convert_alpha()
-      self.wall_img = pg.transform.scale(self.wall_img, (32, 32))  # Regular wall size
+      self.wall_img = pg.transform.scale(self.wall_img, (32, 32))
 
       self.moveable_wall_img = pg.image.load(path.join(self.img_folder, 'brick (2).png')).convert_alpha()
-      self.moveable_wall_img = pg.transform.scale(self.moveable_wall_img, (32, 32))  # Moveable wall size
+      self.moveable_wall_img = pg.transform.scale(self.moveable_wall_img, (32, 32))
+
 
    def new(self):
       self.load_data()
@@ -65,6 +67,7 @@ class Game:
             elif tile == 'M':
                Mob(self, col, row)
      
+
    def run(self):
       while self.playing:
          self.dt = self.clock.tick(FPS) / 1000
@@ -73,24 +76,32 @@ class Game:
          self.draw()
       pg.quit()
 
+
    def events(self):
       for event in pg.event.get():
          if event.type == pg.QUIT:
             self.playing = False
+
+         # added shooting cooldown
+         if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
+            if self.shoot_cooldown.ready():
+               self.player.shoot()      # call your player's shoot function
+               self.shoot_cooldown.start()   # start cooldown timer
+
          if event.type == pg.MOUSEBUTTONDOWN:
             print("I can get input from mousey mouse mouse mousekerson")
 
-   # random mob spawner asked chat for some guidance
+
    def spawn_random_mobs(self, count):
       for _ in range(count):
          while True:
             x = randint(1, 20)
             y = randint(1, 20)
-            # Avoid spawning inside walls
             wall_hit = any(wall.rect.collidepoint(x * TILESIZE[0], y * TILESIZE[1]) for wall in self.all_walls)
             if not wall_hit:
                Mob(self, x, y)
                break
+
 
    def update(self):
       self.all_sprites.update()
@@ -98,11 +109,11 @@ class Game:
       countdown = 10
       self.time = countdown - seconds
 
-      # Respawn mobs when all are dead chat helped
       if len(self.all_mobs) == 0:
          mob_count = randint(2, 4)
          self.spawn_random_mobs(mob_count)
          print(f"All mobs defeated! Respawning {mob_count} new mobs...")
+
 
    def draw_text(self, surface, text, size, color, x, y):
       font_name = pg.font.match_font('arial')
@@ -111,6 +122,7 @@ class Game:
       text_rect = text_surface.get_rect()
       text_rect.midtop = (x, y)
       surface.blit(text_surface, text_rect)
+
 
    def draw(self):
       self.screen.fill(BLACK)

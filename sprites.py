@@ -26,8 +26,15 @@ class Player(Sprite):
         self.speed = 250
         self.health = 100
         self.coins = 0
-        self.cd = Cooldown(1000)
+        self.cd = Cooldown(1000)  # for taking damage
+        self.shoot_cd = Cooldown(400)  # NEW cooldown for shooting
         self.dir = vec(0, -1)  # default facing up
+
+    def shoot(self):
+        """Create a projectile only if cooldown is ready"""
+        if self.shoot_cd.ready():
+            Projectile(self.game, self.rect.centerx, self.rect.centery, self.dir)
+            self.shoot_cd.start()
 
     def get_keys(self):
         self.vel = vec(0, Gravity)
@@ -36,8 +43,8 @@ class Player(Sprite):
             # make sure player has a direction
             if self.dir.length_squared() == 0:
                 self.dir = vec(0, -1)  # default shoot up
-            # create projectile
-            Projectile(self.game, self.rect.centerx, self.rect.centery, self.dir)
+            # shoot with cooldown
+            self.shoot()
         if keys[pg.K_w]:
             self.vel.y = -self.speed*self.game.dt
             self.dir = vec(0,-1)
@@ -52,6 +59,7 @@ class Player(Sprite):
             self.dir = vec(1,0)
         if self.vel[0] != 0 and self.vel[1] != 0:
             self.vel *= 0.7071
+
 
     def collide_with_walls(self, dir):
         if dir == 'x':
