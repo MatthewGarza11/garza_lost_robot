@@ -143,7 +143,7 @@ class Mob(Sprite):
         self.rect = self.image.get_rect()
         self.vel = vec(choice([-1,1]), choice([-1,1]))
         self.pos = vec(x,y)*TILESIZE[0]
-        self.speed = 5
+        self.speed = 3
         self.health = 100  # Added this line so mobs can take damage
         print(self.pos)
     def collide_with_walls(self, dir):
