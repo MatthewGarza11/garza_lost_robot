@@ -45,6 +45,9 @@ class Game:
       self.moveable_wall_img = pg.image.load(path.join(self.img_folder, 'brick (2).png')).convert_alpha()
       self.moveable_wall_img = pg.transform.scale(self.moveable_wall_img, (32, 32))
 
+      self.mob_img = pg.image.load(path.join(self.img_folder, 'Angry Alien.png')).convert_alpha()
+
+
 
    def new(self):
       self.load_data()

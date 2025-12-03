@@ -136,10 +136,11 @@ class Player(Sprite):
 class Mob(Sprite):
     def __init__(self, game, x, y):
         self.game = game
+        self.image = game.mob_img                    
+        self.image = pg.transform.scale(self.image, (48, 48))
+        self.image.set_colorkey(BLACK)
         self.groups = game.all_sprites, game.all_mobs
         Sprite.__init__(self, self.groups)
-        self.image = pg.Surface((32, 32))
-        self.image.fill(RED)
         self.rect = self.image.get_rect()
         self.vel = vec(choice([-1,1]), choice([-1,1]))
         self.pos = vec(x,y)*TILESIZE[0]
