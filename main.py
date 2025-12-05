@@ -4,6 +4,17 @@
 # input
 # update
 # draw
+'''
+ GOALS: Kill as many mobs as possible
+ RULES: use the keys "W", "A","S","D" to move around the map killing the mobs
+FEEDBACK: health system, make mobs do damage, death screen, gravity 
+ FREEDOM: player can move around the map trying to avoid mobs before they die
+
+'''
+
+
+
+
 
 import math
 import random

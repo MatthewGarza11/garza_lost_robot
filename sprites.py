@@ -1,4 +1,4 @@
-# File created by: Chris Cozort
+# File created by: Matthew Garza
 
 # The sprites module contains all the sprites
 # Sprites include: player, mob - moving object
