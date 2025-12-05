@@ -11,6 +11,8 @@ from random import randint
 from random import choice
 vec = pg.math.Vector2
 
+
+# What makes up the player
 class Player(Sprite):
     def __init__(self, game, x, y):
         self.groups = game.all_sprites
@@ -35,7 +37,7 @@ class Player(Sprite):
         if self.shoot_cd.ready():
             Projectile(self.game, self.rect.centerx, self.rect.centery, self.dir)
             self.shoot_cd.start()
-
+#How to shoot and move around
     def get_keys(self):
         self.vel = vec(0, Gravity)
         keys = pg.key.get_pressed()
@@ -60,7 +62,7 @@ class Player(Sprite):
         if self.vel[0] != 0 and self.vel[1] != 0:
             self.vel *= 0.7071
 
-
+#how you collide with the walls in game
     def collide_with_walls(self, dir):
         if dir == 'x':
             hits = pg.sprite.spritecollide(self, self.game.all_walls, False)
@@ -105,7 +107,7 @@ class Player(Sprite):
                         self.pos.y = hits[0].rect.bottom
                 self.vel.y = 0
                 self.rect.y = self.pos.y
-
+#sets the table for collecting coins and taking damage from mobs
     def collide_with_stuff(self, group, kill):
         hits = pg.sprite.spritecollide(self, group, kill)
         if hits: 
@@ -215,7 +217,7 @@ class Wall(Sprite):
 
         self.image = pg.transform.scale(self.image, (32, 32))
         self.image.set_colorkey(BLACK)
-
+#moveable walls
     def collide_with_walls(self, dir):
         if dir == 'x':
             hits = pg.sprite.spritecollide(self, self.game.all_walls, False)
@@ -274,7 +276,7 @@ class Wall(Sprite):
         self.collide_with_walls('y')
 
 
-
+# bullet logic
 class Projectile(Sprite):
     def __init__(self, game, x, y, dir):
         self.game = game

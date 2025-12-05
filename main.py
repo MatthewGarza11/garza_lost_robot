@@ -8,7 +8,7 @@
  GOALS: Kill as many mobs as possible
  RULES: use the keys "W", "A","S","D" to move around the map killing the mobs
 FEEDBACK: health system, make mobs do damage, death screen, gravity 
- FREEDOM: player can move around the map trying to avoid mobs before they die
+ FREEDOM: player can move around the map trying to avoid mobs and kill them with bullets before they die.
 
 '''
 
@@ -38,7 +38,7 @@ class Game:
    # Cooldown 
       self.shoot_cooldown = Cooldown(400)   # cooldown in ms
 
-
+# Efficent way to add images help of AI
    def load_data(self):
       self.game_folder = path.dirname(__file__)
       self.img_folder = path.join(self.game_folder, 'images')
@@ -67,7 +67,7 @@ class Game:
       self.all_coins = pg.sprite.Group()
       self.all_walls = pg.sprite.Group()
       self.all_projectiles = pg.sprite.Group()
-      
+      # this is for the tilemap 
       for row, tiles in enumerate(self.map.data):
          for col, tile in enumerate(tiles):
             if tile == '1':
@@ -105,7 +105,7 @@ class Game:
          if event.type == pg.MOUSEBUTTONDOWN:
             print("I can get input from mousey mouse mouse mousekerson")
 
-
+#spawn random mobs after all are dead
    def spawn_random_mobs(self, count):
       for _ in range(count):
          while True:
@@ -128,7 +128,7 @@ class Game:
          self.spawn_random_mobs(mob_count)
          print(f"All mobs defeated! Respawning {mob_count} new mobs...")
 
-
+#Draws test (time played and health on the screen)
    def draw_text(self, surface, text, size, color, x, y):
       font_name = pg.font.match_font('arial')
       font = pg.font.Font(font_name, size)
