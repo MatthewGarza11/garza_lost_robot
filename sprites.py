@@ -39,7 +39,7 @@ class Player(Sprite):
             self.shoot_cd.start()
 #How to shoot and move around
     def get_keys(self):
-        self.vel = vec(0, Gravity)
+        self.vel = vec(0, 0)
         keys = pg.key.get_pressed()
         if keys[pg.K_SPACE]:
             # make sure player has a direction

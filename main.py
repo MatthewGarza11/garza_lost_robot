@@ -42,7 +42,7 @@ class Game:
    def load_data(self):
       self.game_folder = path.dirname(__file__)
       self.img_folder = path.join(self.game_folder, 'images')
-      self.map = Map(path.join(self.game_folder, 'level1.txt'))
+      self.map = Map(path.join(self.game_folder, 'level2.txt'))
 
       self.player_img = pg.image.load(path.join(self.img_folder, 'green shooter.png')).convert_alpha()
       self.player_img = pg.transform.scale(self.player_img, (48, 48))
