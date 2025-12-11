@@ -35,14 +35,14 @@ class Game:
       pg.display.set_caption("Garza's awesome game!!!!!")
       self.playing = True
 
-   # Cooldown 
+      # Cooldown 
       self.shoot_cooldown = Cooldown(400)   # cooldown in ms
 
-# Efficent way to add images help of AI
+# Efficient way to add images
    def load_data(self):
       self.game_folder = path.dirname(__file__)
       self.img_folder = path.join(self.game_folder, 'images')
-      self.map = Map(path.join(self.game_folder, 'level2.txt'))
+      self.map = Map(path.join(self.game_folder, 'level1.txt'))
 
       self.player_img = pg.image.load(path.join(self.img_folder, 'green shooter.png')).convert_alpha()
       self.player_img = pg.transform.scale(self.player_img, (48, 48))
@@ -59,7 +59,6 @@ class Game:
       self.mob_img = pg.image.load(path.join(self.img_folder, 'Angry Alien.png')).convert_alpha()
 
 
-
    def new(self):
       self.load_data()
       self.all_sprites = pg.sprite.Group()
@@ -67,6 +66,7 @@ class Game:
       self.all_coins = pg.sprite.Group()
       self.all_walls = pg.sprite.Group()
       self.all_projectiles = pg.sprite.Group()
+
       # this is for the tilemap 
       for row, tiles in enumerate(self.map.data):
          for col, tile in enumerate(tiles):
@@ -80,7 +80,7 @@ class Game:
                self.player = Player(self, col, row)
             elif tile == 'M':
                Mob(self, col, row)
-     
+
 
    def run(self):
       while self.playing:
@@ -96,16 +96,15 @@ class Game:
          if event.type == pg.QUIT:
             self.playing = False
 
-         # added shooting cooldown
+         # shooting cooldown
          if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
             if self.shoot_cooldown.ready():
-               self.player.shoot()      # call your player's shoot function
-               self.shoot_cooldown.start()   # start cooldown timer
+               self.player.shoot()
+               self.shoot_cooldown.start()
 
          if event.type == pg.MOUSEBUTTONDOWN:
             print("I can get input from mousey mouse mouse mousekerson")
-
-#spawn random mobs after all are dead
+# Spawn random mobs
    def spawn_random_mobs(self, count):
       for _ in range(count):
          while True:
@@ -116,6 +115,32 @@ class Game:
                Mob(self, x, y)
                break
 
+   def load_new_map(self, filename):
+       # Load the new map file
+       self.map = Map(path.join(self.game_folder, filename))
+
+       # Clear all sprite groups
+       self.all_sprites.empty()
+       self.all_mobs.empty()
+       self.all_walls.empty()
+       self.all_coins.empty()
+       self.all_projectiles.empty()
+
+       # Reload everything based on the new map
+       for row, tiles in enumerate(self.map.data):
+           for col, tile in enumerate(tiles):
+               if tile == '1':
+                   Wall(self, col, row, "unmoveable")
+               elif tile == '2':
+                   Wall(self, col, row, "moveable")
+               elif tile == 'C':
+                   Coin(self, col, row)
+               elif tile == 'P':
+                   self.player = Player(self, col, row)
+               elif tile == 'M':
+                   Mob(self, col, row)
+
+       print(f"Loaded new map: {filename}")
 
    def update(self):
       self.all_sprites.update()
@@ -128,7 +153,7 @@ class Game:
          self.spawn_random_mobs(mob_count)
          print(f"All mobs defeated! Respawning {mob_count} new mobs...")
 
-#Draws test (time played and health on the screen)
+# Draws text
    def draw_text(self, surface, text, size, color, x, y):
       font_name = pg.font.match_font('arial')
       font = pg.font.Font(font_name, size)

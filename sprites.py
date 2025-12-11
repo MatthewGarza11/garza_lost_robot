@@ -28,25 +28,24 @@ class Player(Sprite):
         self.speed = 250
         self.health = 100
         self.coins = 0
-        self.cd = Cooldown(1000)  # for taking damage
-        self.shoot_cd = Cooldown(400)  # NEW cooldown for shooting
-        self.dir = vec(0, -1)  # default facing up
+        self.cd = Cooldown(1000)
+        self.shoot_cd = Cooldown(400)
+        self.dir = vec(0, -1)
 
     def shoot(self):
-        """Create a projectile only if cooldown is ready"""
         if self.shoot_cd.ready():
             Projectile(self.game, self.rect.centerx, self.rect.centery, self.dir)
             self.shoot_cd.start()
-#How to shoot and move around
+
     def get_keys(self):
         self.vel = vec(0, 0)
         keys = pg.key.get_pressed()
+
         if keys[pg.K_SPACE]:
-            # make sure player has a direction
             if self.dir.length_squared() == 0:
-                self.dir = vec(0, -1)  # default shoot up
-            # shoot with cooldown
+                self.dir = vec(0, -1)
             self.shoot()
+
         if keys[pg.K_w]:
             self.vel.y = -self.speed*self.game.dt
             self.dir = vec(0,-1)
@@ -59,10 +58,10 @@ class Player(Sprite):
         if keys[pg.K_d]:
             self.vel.x = self.speed*self.game.dt
             self.dir = vec(1,0)
+
         if self.vel[0] != 0 and self.vel[1] != 0:
             self.vel *= 0.7071
 
-#how you collide with the walls in game
     def collide_with_walls(self, dir):
         if dir == 'x':
             hits = pg.sprite.spritecollide(self, self.game.all_walls, False)
@@ -84,6 +83,7 @@ class Player(Sprite):
                         self.pos.x = hits[0].rect.right
                 self.vel.x = 0
                 self.rect.x = self.pos.x
+
         if dir == 'y':
             hits = pg.sprite.spritecollide(self, self.game.all_walls, False)
             if hits:
@@ -107,10 +107,10 @@ class Player(Sprite):
                         self.pos.y = hits[0].rect.bottom
                 self.vel.y = 0
                 self.rect.y = self.pos.y
-#sets the table for collecting coins and taking damage from mobs
+
     def collide_with_stuff(self, group, kill):
         hits = pg.sprite.spritecollide(self, group, kill)
-        if hits: 
+        if hits:
             if str(hits[0].__class__.__name__) == "Mob":
                 if self.cd.ready():
                     self.health -= 10
@@ -134,6 +134,23 @@ class Player(Sprite):
         else:
             self.image = self.game.player_img
             print("ready")
+# when player leaves the screen the map changes
+        if self.rect.left < 0:
+            self.game.load_new_map("level2.txt")
+            self.rect.right = WIDTH
+
+        elif self.rect.right > WIDTH:
+            self.game.load_new_map("level2.txt")
+            self.rect.left = 0
+
+        elif self.rect.top < 0:
+            self.game.load_new_map("level2.txt")
+            self.rect.bottom = HEIGHT
+
+        elif self.rect.bottom > HEIGHT:
+            self.game.load_new_map("level2.txt")
+            self.rect.top = 0
+
 
 class Mob(Sprite):
     def __init__(self, game, x, y):
