@@ -7,7 +7,7 @@
 '''
  GOALS: Kill as many mobs as possible
  RULES: use the keys "W", "A","S","D" to move around the map killing the mobs
-FEEDBACK: health system, make mobs do damage, death screen, gravity 
+FEEDBACK: health system, make mobs do damage, death screen, gravity, add other levels
  FREEDOM: player can move around the map trying to avoid mobs and kill them with bullets before they die.
 
 '''
