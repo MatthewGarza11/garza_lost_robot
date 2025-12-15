@@ -134,21 +134,22 @@ class Player(Sprite):
         else:
             self.image = self.game.player_img
             print("ready")
+    
 # when player leaves the screen the map changes
         if self.rect.left < 0:
-            self.game.load_new_map("level2.txt")
+            self.game.load_new_map(self.game.next_level_file())
             self.rect.right = WIDTH
 
         elif self.rect.right > WIDTH:
-            self.game.load_new_map("level2.txt")
+            self.game.load_new_map(self.game.next_level_file())
             self.rect.left = 0
 
         elif self.rect.top < 0:
-            self.game.load_new_map("level2.txt")
+            self.game.load_new_map(self.game.next_level_file())
             self.rect.bottom = HEIGHT
 
         elif self.rect.bottom > HEIGHT:
-            self.game.load_new_map("level2.txt")
+            self.game.load_new_map(self.game.next_level_file())
             self.rect.top = 0
 
 
@@ -164,7 +165,7 @@ class Mob(Sprite):
         self.vel = vec(choice([-1,1]), choice([-1,1]))
         self.pos = vec(x,y)*TILESIZE[0]
         self.speed = 3
-        self.health = 100  # Added this line so mobs can take damage
+        self.health = 100  
         print(self.pos)
     def collide_with_walls(self, dir):
         if dir == 'x':
@@ -200,6 +201,7 @@ class Mob(Sprite):
         self.rect.y = self.pos.y
         self.collide_with_walls('y')
 
+
 class Coin(Sprite):
     def __init__(self, game, x, y):
         self.game = game
@@ -212,6 +214,7 @@ class Coin(Sprite):
         self.rect.x = x * TILESIZE[0]
         self.rect.y = y * TILESIZE[1]
         pass
+
 
 class Wall(Sprite):
     def __init__(self, game, x, y, state):
@@ -302,7 +305,7 @@ class Projectile(Sprite):
         self.image = pg.Surface((16, 16))
         self.image.fill(RED)
         self.rect = self.image.get_rect()
-        self.vel = dir.normalize()  # <-- ensures consistent speed
+        self.vel = dir.normalize()
         self.pos = vec(x, y)
         self.rect.center = (x, y)
         self.speed = 10

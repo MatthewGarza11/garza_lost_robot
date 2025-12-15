@@ -31,11 +31,25 @@ class Game:
       self.screen = pg.display.set_mode((WIDTH, HEIGHT))
       pg.display.set_caption("Garza's awesome game!!!!!")
       self.playing = True
+      
 
       self.game_over = False
 
       # Cooldown 
       self.shoot_cooldown = Cooldown(400)   # cooldown in ms
+
+      # Added for multi-level support Help from Chatgpt
+      self.levels = ["level1.txt", "level2.txt", "level3.txt", "level4.txt"]
+      self.current_level_index = 0
+
+   # Added method for level sequence Asked Chat GPT
+   def next_level_file(self):
+      self.current_level_index += 1
+      if self.current_level_index >= len(self.levels):
+         self.current_level_index = 0  # wrap around to level 1 if finished all
+      return self.levels[self.current_level_index]
+
+
 
 # Efficient way to add images
    def load_data(self):
