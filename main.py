@@ -5,15 +5,12 @@
 # update
 # draw
 '''
- GOALS: Kill as many mobs as possible
- RULES: use the keys "W", "A","S","D" to move around the map killing the mobs
+GOALS: Kill as many mobs as possible
+RULES: use the keys "W", "A","S","D" to move around the map killing the mobs
 FEEDBACK: health system, make mobs do damage, death screen, gravity, add other levels
- FREEDOM: player can move around the map trying to avoid mobs and kill them with bullets before they die.
+FREEDOM: player can move around the map trying to avoid mobs and kill them with bullets before they die.
 
 '''
-
-
-
 
 
 import math
@@ -34,6 +31,8 @@ class Game:
       self.screen = pg.display.set_mode((WIDTH, HEIGHT))
       pg.display.set_caption("Garza's awesome game!!!!!")
       self.playing = True
+
+      self.game_over = False
 
       # Cooldown 
       self.shoot_cooldown = Cooldown(400)   # cooldown in ms
@@ -95,6 +94,12 @@ class Game:
       for event in pg.event.get():
          if event.type == pg.QUIT:
             self.playing = False
+# Made it so that you press R to restart game
+         if self.game_over:
+            if event.type == pg.KEYDOWN and event.key == pg.K_r:
+               self.game_over = False
+               self.new()
+            return
 
          # shooting cooldown
          if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
@@ -104,6 +109,7 @@ class Game:
 
          if event.type == pg.MOUSEBUTTONDOWN:
             print("I can get input from mousey mouse mouse mousekerson")
+
 # Spawn random mobs
    def spawn_random_mobs(self, count):
       for _ in range(count):
@@ -116,17 +122,13 @@ class Game:
                break
 
    def load_new_map(self, filename):
-       # Load the new map file
        self.map = Map(path.join(self.game_folder, filename))
-
-       # Clear all sprite groups
        self.all_sprites.empty()
        self.all_mobs.empty()
        self.all_walls.empty()
        self.all_coins.empty()
        self.all_projectiles.empty()
 
-       # Reload everything based on the new map
        for row, tiles in enumerate(self.map.data):
            for col, tile in enumerate(tiles):
                if tile == '1':
@@ -140,9 +142,14 @@ class Game:
                elif tile == 'M':
                    Mob(self, col, row)
 
-       print(f"Loaded new map: {filename}")
-
    def update(self):
+      if self.game_over:
+         return
+
+      if self.player.health <= 0:
+         self.game_over = True
+         return
+
       self.all_sprites.update()
       seconds = pg.time.get_ticks() // 1000
       countdown = 10
@@ -151,7 +158,6 @@ class Game:
       if len(self.all_mobs) == 0:
          mob_count = randint(2, 4)
          self.spawn_random_mobs(mob_count)
-         print(f"All mobs defeated! Respawning {mob_count} new mobs...")
 
 # Draws text
    def draw_text(self, surface, text, size, color, x, y):
@@ -162,8 +168,17 @@ class Game:
       text_rect.midtop = (x, y)
       surface.blit(text_surface, text_rect)
 
-
+   def show_death_screen(self):
+      self.screen.fill(BLACK)
+      self.draw_text(self.screen, "YOU DIED", 64, RED, WIDTH // 2, HEIGHT // 3)
+      self.draw_text(self.screen, "Press R to Restart", 32, WHITE, WIDTH // 2, HEIGHT // 2)
+      pg.display.flip()
+# draws text screen
    def draw(self):
+      if self.game_over:
+         self.show_death_screen()
+         return
+
       self.screen.fill(BLACK)
       self.draw_text(self.screen, str(self.player.health), 24, WHITE, 100, 100)
       self.draw_text(self.screen, str(self.player.coins), 24, WHITE, 400, 100)
