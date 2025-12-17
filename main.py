@@ -12,7 +12,6 @@ FREEDOM: player can move around the map trying to avoid mobs and kill them with 
 
 '''
 
-
 import math
 import random
 import sys
@@ -31,8 +30,6 @@ class Game:
       self.screen = pg.display.set_mode((WIDTH, HEIGHT))
       pg.display.set_caption("Garza's awesome game!!!!!")
       self.playing = True
-      
-
       self.game_over = False
 
       # Cooldown 
@@ -182,11 +179,27 @@ class Game:
       text_rect.midtop = (x, y)
       surface.blit(text_surface, text_rect)
 
+# Health bar help from Chatgpt
+   def draw_health_bar(self, x, y, health):
+      max_health = 100
+      bar_width = 100
+   
+      bar_height = 10   
+      if health < 0:
+          health = 0
+      fill = (health / max_health) * bar_width
+      outline_rect = pg.Rect(x, y, bar_width, bar_height)
+      fill_rect = pg.Rect(x, y, fill, bar_height)
+      pg.draw.rect(self.screen, RED, fill_rect)
+      pg.draw.rect(self.screen, WHITE, outline_rect, 2)
+
+# Death screen
    def show_death_screen(self):
       self.screen.fill(BLACK)
       self.draw_text(self.screen, "YOU DIED", 64, RED, WIDTH // 2, HEIGHT // 3)
       self.draw_text(self.screen, "Press R to Restart", 32, WHITE, WIDTH // 2, HEIGHT // 2)
       pg.display.flip()
+
 # draws text screen
    def draw(self):
       if self.game_over:
@@ -194,10 +207,13 @@ class Game:
          return
 
       self.screen.fill(BLACK)
-      self.draw_text(self.screen, str(self.player.health), 24, WHITE, 100, 100)
+      self.all_sprites.draw(self.screen)
+      # Draw the smaller health bar above the player
+      bar_x = self.player.rect.centerx - 50  # half of new bar_width
+      bar_y = self.player.rect.top - 15      # above the player
+      self.draw_health_bar(bar_x, bar_y, self.player.health)
       self.draw_text(self.screen, str(self.player.coins), 24, WHITE, 400, 100)
       self.draw_text(self.screen, str(self.time), 24, WHITE, 500, 100)
-      self.all_sprites.draw(self.screen)
       pg.display.flip()
 
 
