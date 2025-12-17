@@ -163,7 +163,7 @@ class Game:
 
       self.all_sprites.update()
       seconds = pg.time.get_ticks() // 1000
-      countdown = 10
+      countdown = 100
       self.time = countdown - seconds
 
       if len(self.all_mobs) == 0:
@@ -208,12 +208,12 @@ class Game:
 
       self.screen.fill(BLACK)
       self.all_sprites.draw(self.screen)
-      # Draw the smaller health bar above the player
-      bar_x = self.player.rect.centerx - 50  # half of new bar_width
-      bar_y = self.player.rect.top - 15      # above the player
+      # Draw the smaller health bar above the player help from chatgpt
+      bar_x = self.player.rect.centerx - 50 
+      bar_y = self.player.rect.top - 15      
       self.draw_health_bar(bar_x, bar_y, self.player.health)
       self.draw_text(self.screen, str(self.player.coins), 24, WHITE, 400, 100)
-      self.draw_text(self.screen, str(self.time), 24, WHITE, 500, 100)
+      # self.draw_text(self.screen, str(self.time), 24, WHITE, 500, 100)
       pg.display.flip()
 
 
